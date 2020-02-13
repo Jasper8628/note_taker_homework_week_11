@@ -12,6 +12,8 @@
     <header>
         <h1 class="text-center">
             Note Taker
+            <h5 id="date" class="text-center"></h5>
+            <h6 id="time" class="text-center"></h6>
         </h1>
     </header>
     <div class="container">
@@ -33,7 +35,7 @@
                         <textarea class="form-control" id="content" rows="3"></textarea>
                     </div>
                     <button id="save" type="submit" class="btn btn-primary">Save</button>
-                    <button id="delete"  class="btn btn-primary">Delete</button>
+                    <button id="delete" class="btn btn-primary">Delete</button>
                 </form>
 
             </div>
@@ -47,7 +49,20 @@
 
     <script>
         $(document).ready(function () {
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             let noteID = "";
+            function displayTime() {
+                var d = new Date();
+                var s = d.getSeconds();
+                var m = d.getMinutes();
+                var h = d.getHours();
+                $("#time").text(h + ":" + m + ":" + s);
+            }
+            setInterval(displayTime, 1000);
+            $("#date").text(date);
+            $("#time").text(time);
 
             $(".note").on("click", function () {
                 console.log(1);
@@ -67,8 +82,6 @@
             $("#save").on("click", function () {
                 event.preventDefault();
                 let content = $("#content").val();
-                let time = "";
-                let date = "";
                 let id = date + time;
                 let newNote = {
                     "date": date,
@@ -101,9 +114,9 @@
                     var tableList = $("<div>");
                     var listItem = $("<div>");
                     let id = entry.id;
-                    let editNote=$("<button>");
+                    let editNote = $("<button>");
                     editNote.text("Edit");
-                    editNote.attr("data-id",id);
+                    editNote.attr("data-id", id);
                     editNote.addClass("note btn btn-secondary");
                     tableList.addClass("card");
                     listItem.addClass("card-body");

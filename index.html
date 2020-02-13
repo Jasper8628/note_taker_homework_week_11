@@ -118,7 +118,7 @@
                 }
                 $(".note").on("click", function () {
                 console.log(1);
-                noteID = this.attr("data-id");
+                noteID = $(this).attr("data-id");
 
                 let noteContent = "";
                 $.get("/api/notes").then(function (response) {

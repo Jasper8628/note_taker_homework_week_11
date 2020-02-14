@@ -18,7 +18,7 @@
     </header>
     <div class="container">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="row" id="note-list">
 
                 </div>
@@ -28,23 +28,17 @@
                 </div>
 
             </div>
-            <div class="col-md-10" id="note">
+            <div class="col-md-9" id="note">
                 <form>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Note</label>
+                    <div class="form-group">Note:
+                        <label for="note" id="label"></label>
                         <textarea class="form-control" id="content" rows="3"></textarea>
                     </div>
                     <button id="save" type="submit" class="btn btn-primary">Save</button>
                     <button id="delete" class="btn btn-primary">Delete</button>
                 </form>
-
             </div>
-
         </div>
-        <div>
-
-        </div>
-
     </div>
 
     <script>
@@ -52,7 +46,7 @@
             var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let noteID = "";
+            let noteID;
             function displayTime() {
                 var d = new Date();
                 var s = d.getSeconds();
@@ -64,22 +58,30 @@
             $("#date").text(date);
             $("#time").text(time);
 
-            
+
 
             $("#save").on("click", function () {
                 event.preventDefault();
                 let content = $("#content").val();
-                let id = date + time;
+                let today = new Date();
+                let newDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                let newTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                let id = newDate + newTime;
+                
                 let newNote = {
-                    "date": date,
-                    "time": time,
+                    "date": newDate,
+                    "time": newTime,
                     "content": content,
                     "id": id
                 };
+                console.log(id);
                 $.post("/api/notes", newNote).then(function (data) {
-                    console.log(data);
                     refreshNotes(data);
                 });
+                
+                noteID="";
+                $("#content").text("");
+
             });
 
             $("#delete").on("click", function () {
@@ -96,6 +98,9 @@
             });
 
             function refreshNotes(data) {
+                noteID="";
+                $("#content").text("");
+
                 $(".card").remove();
                 for (entry of data) {
                     var tableList = $("<div>");
@@ -117,19 +122,23 @@
                     $("#note-list").append(tableList);
                 }
                 $(".note").on("click", function () {
-                console.log(1);
-                noteID = $(this).attr("data-id");
-
-                let noteContent = "";
-                $.get("/api/notes").then(function (response) {
-                    for (entry of response) {
-                        if (entry.id = noteID) {
-                            noteContent = entry.content;
+                    noteID = $(this).attr("data-id");
+                    let noteContent = "";
+                    $.get("/api/notes").then(function (response) {
+                        let label = "";
+                        for (entry of response) {
+                            if (entry.id == noteID) {
+                                noteContent = entry.content;
+                                console.log(noteContent);
+                                label = entry.date + " " + entry.time;
+                            }
                         }
-                    }
-                    $("#content").text(noteContent);
+                        $("#label").text(label)
+                        console.log(1);
+                        $("#content").text(noteContent);
+                        console.log(2);
+                    });
                 });
-            });
             }
 
             function start() {

@@ -90,8 +90,6 @@
             });
 
             $("#delete").on("click", function () {
-                event.preventDefault();
-                console.log(noteID);
                 $.post("/notes/delete", {"id":noteID}).then(function (data) {
                     refreshNotes(data);
                 });

@@ -17,6 +17,7 @@ app.get("/api/notes", function (req, res) {
 });
 app.post("/api/notes", function (req, res) {
     let newNote = req.body;
+    console.log(newNote);
     let index=data.findIndex(entry=>entry.id==newNote.id);
     if (index==-1) {
         data.push(newNote);
@@ -31,10 +32,13 @@ app.post("/api/notes", function (req, res) {
 
 app.post("/notes/delete", function (req, res) {
     let noteId = req.body;
+    console.log(req.body);
     for (entry of data) {
-        if (entry.id = noteId) {
+        if (entry.id ==noteId.id) {
             let index = data.indexOf(entry);
             data.splice(index, 1);
+            console.log(index);
+            console.log(data);
         }
     }
     res.json(data);

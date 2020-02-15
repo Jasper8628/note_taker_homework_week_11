@@ -30,8 +30,8 @@
             </div>
             <div class="col-md-9" id="note">
                 <form>
-                    <div class="form-group">Note:
-                        <label for="note" id="label"></label>
+                    <div class="form-group">
+                        <label for="note" id="label">New note: </label>
                         <textarea class="form-control" id="content" rows="3"></textarea>
                     </div>
                     <button id="save" type="submit" class="btn btn-primary">Save</button>
@@ -46,7 +46,7 @@
             var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let noteID;
+            let noteID=date+time;
             function displayTime() {
                 var d = new Date();
                 var s = d.getSeconds();
@@ -61,12 +61,19 @@
 
 
             $("#save").on("click", function () {
-                event.preventDefault();
                 let content = $("#content").val();
                 let today = new Date();
                 let newDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                 let newTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                let id = newDate + newTime;
+                let id;
+                if($("#label").text()!=null){
+                    id=noteID;
+                }
+                else{
+                    
+                    id=  newDate + newTime;
+                }
+                
                 
                 let newNote = {
                     "date": newDate,
@@ -79,13 +86,13 @@
                     refreshNotes(data);
                 });
                 
-                noteID="";
-                $("#content").text("");
 
             });
 
             $("#delete").on("click", function () {
-                $.post("/notes/delete", noteID).then(function (data) {
+                event.preventDefault();
+                console.log(noteID);
+                $.post("/notes/delete", {"id":noteID}).then(function (data) {
                     refreshNotes(data);
                 });
             });
@@ -98,9 +105,6 @@
             });
 
             function refreshNotes(data) {
-                noteID="";
-                $("#content").text("");
-
                 $(".card").remove();
                 for (entry of data) {
                     var tableList = $("<div>");
@@ -133,10 +137,11 @@
                                 label = entry.date + " " + entry.time;
                             }
                         }
-                        $("#label").text(label)
+                        $("#label").text("Note from: "+ label)
                         console.log(1);
                         $("#content").text(noteContent);
                         console.log(2);
+                        console.log(noteID);
                     });
                 });
             }

@@ -5,6 +5,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+    <link rel="manifest" href="manifest.webmanifest" />
 
 </head>
 
@@ -46,7 +48,7 @@
             var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let noteID=date+time;
+            let noteID = date + time;
             function displayTime() {
                 var d = new Date();
                 var s = d.getSeconds();
@@ -66,15 +68,15 @@
                 let newDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                 let newTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                 let id;
-                if($("#label").text()!=null){
-                    id=noteID;
+                if ($("#label").text() != null) {
+                    id = noteID;
                 }
-                else{
-                    
-                    id=  newDate + newTime;
+                else {
+
+                    id = newDate + newTime;
                 }
-                
-                
+
+
                 let newNote = {
                     "date": newDate,
                     "time": newTime,
@@ -85,12 +87,12 @@
                 $.post("/api/notes", newNote).then(function (data) {
                     refreshNotes(data);
                 });
-                
+
 
             });
 
             $("#delete").on("click", function () {
-                $.post("/notes/delete", {"id":noteID}).then(function (data) {
+                $.post("/notes/delete", { "id": noteID }).then(function (data) {
                     refreshNotes(data);
                 });
             });
@@ -135,7 +137,7 @@
                                 label = entry.date + " " + entry.time;
                             }
                         }
-                        $("#label").text("Note from: "+ label)
+                        $("#label").text("Note from: " + label)
                         console.log(1);
                         $("#content").text(noteContent);
                         console.log(2);
@@ -153,6 +155,17 @@
             }
             start();
         });
+
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("service-worker.js")
+                    .then((reg) => {
+                        console.log("Service worker here.", reg);
+                    })
+            });
+        }
 
     </script>
 </body>
